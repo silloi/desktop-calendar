@@ -69,7 +69,13 @@ const dayEnglishString = computed(() =>
 );
 
 const showDatePicker = () => {
-  inputDateRef.value?.showPicker();
+  if (typeof inputDateRef.value.showPicker === "function") {
+    inputDateRef.value.showPicker();
+  } else {
+    // Fallback for browsers that don't support showPicker() (e.g. iOS Safari)
+    inputDateRef.value.focus();
+    inputDateRef.value.click();
+  }
 };
 
 onMounted(() => {
