@@ -1,0 +1,8 @@
+html {
+  font-size: min(calc(100vw * 0.04), calc(430px * 0.04));
+}
+
+body {
+  margin: 0;
+  background-color: white;
+}
