@@ -2,7 +2,11 @@
 export default defineNuxtConfig({
   app: {
     head: {
-      meta: [{ name: "theme-color", content: "#ea5506" }],
+      meta: [
+        { name: "theme-color", content: "#ea5506" },
+        { name: "mobile-web-app-capable", content: "yes" },
+        { name: "apple-mobile-web-app-capable", content: "yes" },
+      ],
       link: [
         { rel: "icon", href: `/favicon.ico`, sizes: "48x48" },
         { rel: "apple-touch-icon", href: `/apple-touch-icon-180x180.png` },
@@ -47,6 +51,12 @@ export default defineNuxtConfig({
           purpose: "maskable",
         },
       ],
+    },
+    workbox: {
+      navigateFallback: null,
+    },
+    client: {
+      installPrompt: true,
     },
     devOptions: {
       enabled: true,
