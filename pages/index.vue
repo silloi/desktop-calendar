@@ -11,12 +11,16 @@ const solarDateFormatter = new Intl.DateTimeFormat("zh-Hant-HK-u-nu-hanidec", {
 const inputDateRef = ref<HTMLInputElement | null>(null);
 
 const dateLiteral = ref(new Date().toISOString().slice(0, 10));
-const date = computed(() => new Date(dateLiteral.value));
+const dateLiteralResidue = ref(new Date().toISOString().slice(10));
+const date = computed(
+  () => new Date(`${dateLiteral.value}${dateLiteralResidue.value}`)
+);
 
 const content = ref("");
 
 watch(dateLiteral, () => {
   content.value = localStorage.getItem(dateLiteral.value) || "";
+  dateLiteralResidue.value = new Date().toISOString().slice(10);
 });
 
 watch(content, () => {
