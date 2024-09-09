@@ -69,6 +69,7 @@ const dayEnglishString = computed(() =>
 );
 
 const showDatePicker = () => {
+  if (inputDateRef.value === null) return;
   if (typeof inputDateRef.value.showPicker === "function") {
     inputDateRef.value.showPicker();
   } else {
