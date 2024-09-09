@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue";
+import { useKyureki } from "~/composables/useKyureki";
+import { useRokuyo } from "~/composables/useRekichu";
 
-const lunarDateFormatter = new Intl.DateTimeFormat("zh-Hant-HK-u-ca-chinese", {
-  dateStyle: "long",
-});
-const solarDateFormatter = new Intl.DateTimeFormat("zh-Hant-HK-u-nu-hanidec", {
+const solarDateFormatter = new Intl.DateTimeFormat("zh-Hans-CN-u-nu-hanidec", {
   dateStyle: "long",
 });
 
@@ -35,28 +34,18 @@ const color = computed(() =>
   date.value.getDay() === 0 ? "#ff0000" : "#000080"
 );
 
-const lunarFullString = computed(() => lunarDateFormatter.format(date.value));
+const {
+  lunarYearString,
+  lunarMonthString,
+  lunarDateString,
 
-const lunarYearString = computed(() => lunarFullString.value.slice(0, 2));
-const lunarMonthString = computed(() =>
-  lunarFullString.value.slice(9, 11).replace("月", "")
-);
-const lunarDateString = computed(() => {
-  const rawString = Number.parseInt(
-    lunarFullString.value.slice(-2).replace("月", "")
-  ).toLocaleString("zh-Hant-HK-u-nu-hanidec");
-  return rawString
-    .replace("一〇", "十")
-    .replace(/一(一|二|三|四|五|六|七|八|九)/, "十$1")
-    .replace("二〇", "二十")
-    .replace(/二(一|二|三|四|五|六|七|八|九)/, "廿$1")
-    .replace("三〇", "三十");
-});
-const lunarDateStringPadZero = computed(() =>
-  lunarDateString.value.length === 1
-    ? `初${lunarDateString.value}`
-    : lunarDateString.value
-);
+  lunarMonthNumber,
+  lunarDateNumber,
+
+  lunarMonthBigOrSmall,
+} = useKyureki(date);
+
+const rokuyo = useRokuyo(lunarMonthNumber, lunarDateNumber);
 
 const monthEnglishString = computed(() =>
   date.value.toLocaleString("en-US", { month: "long" })
@@ -90,17 +79,17 @@ onMounted(() => {
     <section class="top">
       <nav>
         <p>{{ lunarYearString }}年</p>
-        <p>{{ lunarMonthString }}月</p>
-        <p>{{ lunarDateStringPadZero }}日</p>
+        <p>{{ lunarMonthString }}月{{ lunarMonthBigOrSmall }}</p>
+        <p>{{ lunarDateString }}日</p>
       </nav>
       <div class="title">
         <h1>{{ solarYearNumber }}</h1>
         <h2>{{ solarFullString }}</h2>
       </div>
       <nav>
-        <!-- <p>七十二候</p> -->
-        <!-- <p>六曜九星</p> -->
-        <!-- <p>二十四節</p> -->
+        <p>二十四節</p>
+        <p>七十二候</p>
+        <p>{{ rokuyo }}九星</p>
       </nav>
     </section>
     <section class="middle">
@@ -207,6 +196,7 @@ h2 {
   color: inherit;
   text-decoration: none;
   cursor: pointer;
+  margin-right: 0.25rem;
 }
 
 .bottom {
